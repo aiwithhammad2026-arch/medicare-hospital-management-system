@@ -1,0 +1,13 @@
+# Environments & local settings
+.env
+.env.local
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node / Scratch
+node_modules/
+scratch/

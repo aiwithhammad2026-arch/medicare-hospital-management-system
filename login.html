@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>Staff Sign In | MediCare Hospital</title>
+
+  <!-- Hospital Favicon -->
+  <link rel="icon" type="image/png" href="logo.png" />
+
+  <!-- Google Fonts - Plus Jakarta Sans & Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Shared Application Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="login-body">
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Main Authentication Layout (Facebook-inspired Clean Split & Bento Card) -->
+  <main class="login-wrapper">
+    <div class="login-split-layout">
+      
+      <!-- Left Column: Hospital Brand Showcase -->
+      <div class="login-brand-col">
+        <div class="login-brand-header">
+          <div class="login-logo-box" aria-hidden="true">
+            <img src="logo.png" alt="MediCare Hospital Logo" class="login-logo-img" />
+          </div>
+          <h1 class="login-brand-title">MediCare</h1>
+        </div>
+        <p class="login-brand-tagline">
+          Clinical Patient Intake & Health Records Management System
+        </p>
+        <p class="login-brand-desc">
+          Sign in to manage patient admissions, review clinical histories, and securely record healthcare dossiers.
+        </p>
+
+        <!-- Enterprise Feature Highlights -->
+        <div class="login-trust-badges">
+          <div class="trust-badge-item">
+            <div class="trust-badge-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="trust-badge-text">
+              <strong>Clinical Data Privacy</strong>
+              <span>Protected with PostgreSQL Row-Level Security</span>
+            </div>
+          </div>
+          <div class="trust-badge-item">
+            <div class="trust-badge-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="trust-badge-text">
+              <strong>Real-Time Admissions</strong>
+              <span>Concurrency-safe Patient ID generation</span>
+            </div>
+          </div>
+          <div class="trust-badge-item">
+            <div class="trust-badge-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="trust-badge-text">
+              <strong>Multi-Role Medical Access</strong>
+              <span>Tailored views for Reception, Doctors & Admin</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Elevated Login Card -->
+      <div class="login-card-col">
+        <div class="login-card">
+          
+          <div class="login-card-header">
+            <h2 class="login-card-title">Staff Sign In</h2>
+            <p class="login-card-subtitle">Enter your hospital staff credentials</p>
+          </div>
+
+          <!-- Context Alert Banner (e.g. Logged Out, Session Expired, Inactive Staff) -->
+          <div id="loginStatusBanner" class="alert-banner" style="display: none;" role="alert"></div>
+
+          <!-- Demo Staff Credentials Helper (Instant Testing) -->
+          <div class="demo-accounts-box">
+            <div class="demo-accounts-header">
+              <span class="demo-accounts-title">Staff Role Quick Select</span>
+              <span class="demo-accounts-pwd">Default: <code>Password123!</code></span>
+            </div>
+            <div class="demo-accounts-buttons">
+              <button type="button" class="btn-demo-fill" data-email="receptionist@medicare.com" data-password="Password123!">Receptionist</button>
+              <button type="button" class="btn-demo-fill" data-email="admin@medicare.com" data-password="Password123!">Admin</button>
+              <button type="button" class="btn-demo-fill" data-email="doctor@medicare.com" data-password="Password123!">Doctor</button>
+              <button type="button" class="btn-demo-fill" data-email="nurse@medicare.com" data-password="Password123!">Nurse</button>
+            </div>
+          </div>
+
+          <!-- Staff Login Form -->
+          <form id="staffLoginForm" novalidate>
+            
+            <!-- Email Input -->
+            <div class="form-group">
+              <label class="form-label" for="loginEmail">
+                Staff Email Address <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="email"
+                id="loginEmail"
+                name="email"
+                class="form-input"
+                placeholder="staff@medicare.com"
+                autocomplete="username"
+                required
+                aria-describedby="loginEmail-error"
+              />
+              <span class="error-message" id="loginEmail-error" aria-live="polite"></span>
+            </div>
+
+            <!-- Password Input with Show/Hide Toggle -->
+            <div class="form-group">
+              <div class="password-label-row">
+                <label class="form-label" for="loginPassword">
+                  Password <span class="required" aria-hidden="true">*</span>
+                </label>
+                <button type="button" class="btn-link" id="forgotPasswordBtn">
+                  Forgot password?
+                </button>
+              </div>
+              <div class="password-input-wrapper">
+                <input
+                  type="password"
+                  id="loginPassword"
+                  name="password"
+                  class="form-input password-input"
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                  required
+                  aria-describedby="loginPassword-error"
+                />
+                <button
+                  type="button"
+                  class="password-toggle-btn"
+                  id="passwordToggleBtn"
+                  aria-label="Show password"
+                  title="Show password"
+                >
+                  <!-- Eye Icon (Show) -->
+                  <svg class="eye-icon" id="eyeOpenIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <!-- Eye Off Icon (Hide) -->
+                  <svg class="eye-icon" id="eyeClosedIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;" aria-hidden="true">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  </svg>
+                </button>
+              </div>
+              <span class="error-message" id="loginPassword-error" aria-live="polite"></span>
+            </div>
+
+            <!-- Remember Me Checkbox -->
+            <div class="login-options-row">
+              <label class="checkbox-label" for="rememberMe">
+                <input type="checkbox" id="rememberMe" name="rememberMe" checked />
+                <span>Remember this device</span>
+              </label>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="login-action-row">
+              <button type="submit" class="btn btn-primary btn-block" id="signInBtn">
+                <span class="btn-text">Sign In</span>
+                <span class="btn-spinner" id="signInSpinner" style="display: none;" aria-hidden="true"></span>
+              </button>
+            </div>
+
+          </form>
+
+          <!-- Security Notice & DB Config -->
+          <div class="login-footer">
+            <p class="login-security-notice">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              Authorized hospital personnel only. All access is logged and audited.
+            </p>
+
+            <div class="login-config-status">
+              <button type="button" class="btn-link config-link" id="configSupabaseBtn">
+                ⚙️ Database Connection Settings
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =========================================================
+       FORGOT PASSWORD MODAL
+       ========================================================= -->
+  <dialog id="forgotPasswordModal" class="modal" aria-labelledby="forgotPasswordTitle">
+    <div class="modal-card modal-card-sm">
+      <h2 id="forgotPasswordTitle" class="modal-title">Reset Password</h2>
+      <p class="modal-message">Enter your staff email address and we will send you a secure password reset link.</p>
+      
+      <form id="forgotPasswordForm" style="width: 100%; text-align: left;" novalidate>
+        <div class="form-group" style="margin-bottom: var(--space-3);">
+          <label class="form-label" for="resetEmail">Staff Email</label>
+          <input type="email" id="resetEmail" class="form-input" placeholder="staff@medicare.com" required />
+          <span class="error-message" id="resetEmail-error" aria-live="polite"></span>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancelResetBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="sendResetBtn">Send Reset Link</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- =========================================================
+       PASSWORD UPDATE MODAL (Invoked via Recovery Hash)
+       ========================================================= -->
+  <dialog id="updatePasswordModal" class="modal" aria-labelledby="updatePasswordTitle">
+    <div class="modal-card modal-card-sm">
+      <h2 id="updatePasswordTitle" class="modal-title">Set New Password</h2>
+      <p class="modal-message">Please enter a new password for your hospital staff account.</p>
+
+      <form id="updatePasswordForm" style="width: 100%; text-align: left;" novalidate>
+        <div class="form-group" style="margin-bottom: var(--space-2);">
+          <label class="form-label" for="newPassword">New Password</label>
+          <input type="password" id="newPassword" class="form-input" placeholder="At least 6 characters" minlength="6" required />
+          <span class="error-message" id="newPassword-error" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--space-3);">
+          <label class="form-label" for="confirmNewPassword">Confirm New Password</label>
+          <input type="password" id="confirmNewPassword" class="form-input" placeholder="Re-enter password" required />
+          <span class="error-message" id="confirmNewPassword-error" aria-live="polite"></span>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary" id="saveNewPasswordBtn">Update Password</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- =========================================================
+       SUPABASE CREDENTIALS CONFIGURATION MODAL
+       ========================================================= -->
+  <dialog id="supabaseConfigModal" class="modal" aria-labelledby="supabaseConfigTitle">
+    <div class="modal-card modal-card-sm" style="max-width: 460px;">
+      <h2 id="supabaseConfigTitle" class="modal-title">Database Settings</h2>
+      <p class="modal-message" style="margin-bottom: 12px;">Connect to your Supabase PostgreSQL project using your public Project URL and Anon/Publishable Key.</p>
+
+      <form id="supabaseConfigForm" style="width: 100%; text-align: left;" novalidate>
+        <div class="form-group" style="margin-bottom: var(--space-2);">
+          <label class="form-label" for="configUrl">Project URL</label>
+          <input type="url" id="configUrl" class="form-input" placeholder="https://your-project.supabase.co" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--space-3);">
+          <label class="form-label" for="configAnonKey">Anon / Public Key</label>
+          <textarea id="configAnonKey" class="form-textarea" rows="3" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI..." required style="min-height: 72px; font-family: monospace; font-size: 11px;"></textarea>
+        </div>
+
+        <p class="config-note">
+          ⚠️ <strong>Security:</strong> Only use your public <code>anon</code> key. Never paste the <code>service_role</code> secret key here.
+        </p>
+
+        <div class="modal-actions" style="margin-top: 16px;">
+          <button type="button" class="btn btn-secondary" id="closeConfigBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveConfigBtn">Save & Connect</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Official Supabase JS v2 Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Application Configuration & Auth Scripts -->
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>
+

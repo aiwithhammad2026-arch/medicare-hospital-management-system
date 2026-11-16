@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>Patient Management | MediCare Hospital</title>
+
+  <!-- Hospital Favicon -->
+  <link rel="icon" type="image/png" href="logo.png" />
+
+  <!-- Google Fonts - Plus Jakarta Sans & Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Auth Guard Full-Screen Loading Overlay -->
+  <div id="authGuardLoading" class="auth-guard-loading" aria-live="polite" aria-busy="true">
+    <img src="logo.png" alt="MediCare Hospital" style="width: 52px; height: 52px; object-fit: contain; border-radius: 8px; margin-bottom: 4px;" />
+    <div class="auth-guard-spinner"></div>
+    <div class="auth-guard-text">Verifying hospital staff credentials...</div>
+  </div>
+
+  <!-- Accessible Skip-to-Content Link for Keyboard Users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Fallback for JavaScript-disabled environments -->
+  <noscript>
+    <div class="noscript-banner" role="alert">JavaScript is required to run the Hospital Management System prototype.</div>
+  </noscript>
+
+  <!-- =========================================================
+       SIDEBAR NAVIGATION (240px fixed on desktop, off-canvas on tablet/mobile)
+       ========================================================= -->
+  <aside class="sidebar" id="sidebar" aria-label="Main Navigation">
+    <div class="sidebar-header">
+      <div class="logo-box" aria-hidden="true">
+        <img src="logo.png" alt="MediCare Hospital Logo" class="logo-img" />
+      </div>
+      <span class="hospital-name">MediCare Hospital</span>
+    </div>
+
+    <nav class="nav" aria-label="Sidebar Menu">
+      <ul class="nav-list">
+        <!-- Dashboard (Mock) -->
+        <li class="nav-item">
+          <a href="#" class="nav-link visual-only">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+            </svg>
+            <span class="nav-label">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- Patient Registration (Interactive View) -->
+        <li class="nav-item active" id="navItemRegistration">
+          <a href="#register" class="nav-link" id="navRegistration" aria-current="page" data-view="registration">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="8.5" cy="7" r="4" />
+              <line x1="20" y1="8" x2="20" y2="14" />
+              <line x1="23" y1="11" x2="17" y2="11" />
+            </svg>
+            <span class="nav-label">Patient Registration</span>
+          </a>
+        </li>
+
+        <!-- Patient List (Interactive View) -->
+        <li class="nav-item" id="navItemPatientList">
+          <a href="#patients" class="nav-link" id="navPatientList" data-view="patient-list">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <span class="nav-label">Patient List</span>
+          </a>
+        </li>
+
+        <!-- Settings (Mock) -->
+        <li class="nav-item">
+          <a href="#" class="nav-link visual-only">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            <span class="nav-label">Settings</span>
+          </a>
+        </li>
+
+        <!-- Help Center (Mock) -->
+        <li class="nav-item">
+          <a href="#" class="nav-link visual-only">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <span class="nav-label">Help Center</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <hr class="divider" />
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="#" class="nav-link" id="sidebarLogoutBtn" role="button" aria-label="Sign out of hospital management system">
+            <!-- Logout -->
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            <span class="nav-label">Logout</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Overlay for off-canvas drawer on <=1024px -->
+  <div class="overlay" id="overlay" tabindex="-1" aria-hidden="true"></div>
+
+  <!-- Toast Notifications Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- =========================================================
+       APPLICATION SHELL (Top Bar & Main Page Content)
+       ========================================================= -->
+  <div class="app-shell">
+    <!-- Top Bar Header (Sticky) -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="sidebar">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+
+        <!-- Enterprise Topbar Search Box -->
+        <div class="topbar-search-box">
+          <svg viewBox="0 0 24 24" class="topbar-search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" class="topbar-search-input" placeholder="Search patient directory (Name, ID, Phone)..." id="topbarSearchInput" aria-label="Quick search" />
+          <kbd class="topbar-kbd">⌘ F</kbd>
+        </div>
+      </div>
+
+      <div class="top-bar-right">
+        <!-- Quick Action "+ New Patient" Button -->
+        <button type="button" class="btn btn-primary btn-sm" id="topbarCreateBtn" aria-label="Register patient">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>New Patient</span>
+        </button>
+
+        <!-- Notification Icon Button with Notification Dot -->
+        <button class="icon-btn has-dot" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" class="top-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="notification-badge-dot" aria-hidden="true"></span>
+        </button>
+
+        <!-- User Profile with Initial Avatar -->
+        <div class="user-info">
+          <div class="avatar" aria-hidden="true">AR</div>
+          <div class="user-meta">
+            <span class="user-name">Admin Receptionist</span>
+            <span class="user-role">Reception</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="main-content" tabindex="-1">
+      <!-- Visually Hidden Form Validation Live Region for Screen Readers -->
+      <div id="formStatusSummary" class="sr-only" aria-live="polite" role="status"></div>
+
+      <div class="content-wrapper">
+        <!-- Dynamic Breadcrumb Navigation -->
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="#" class="breadcrumb-link">Home</a>
+          <span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <a href="#" class="breadcrumb-link">Patients</a>
+          <span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span class="breadcrumb-current" id="breadcrumbCurrent" aria-current="page">Patient Registration</span>
+        </nav>
+
+        <!-- Page Header with Dynamic Action Buttons -->
+        <div class="page-header-row">
+          <div class="page-header-text">
+            <h1 class="page-title" id="pageTitle">Patient Registration</h1>
+            <p class="page-subtitle" id="pageSubtitle">Fields marked with <span class="required" aria-hidden="true">*</span> are required.</p>
+          </div>
+          <div id="pageHeaderActions" class="page-header-actions" style="display: none;">
+            <button type="button" class="btn btn-secondary btn-sm" id="seedPatientsBtn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="8.5" cy="7" r="4" />
+                <line x1="20" y1="8" x2="20" y2="14" />
+                <line x1="23" y1="11" x2="17" y2="11" />
+              </svg>
+              Load Demo Patients
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" id="exportCsvBtn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export CSV
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" id="newPatientBtn">
+              + New Patient
+            </button>
+          </div>
+        </div>
+
+        <!-- =========================================================
+             VIEW 1: REGISTRATION FORM
+             ========================================================= -->
+        <div id="registrationView" class="view-panel">
+          <section class="card">
+            <form id="patientForm" novalidate>
+              
+              <!-- SECTION 1: Personal Information -->
+              <fieldset class="form-section">
+                <legend class="section-title">Personal Information</legend>
+                <hr class="section-divider" />
+                <div class="form-grid">
+                  
+                  <!-- First Name -->
+                  <div class="form-group">
+                    <label class="form-label" for="firstName">
+                      First Name <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <input class="form-input" type="text" id="firstName" name="firstName" placeholder="e.g. John" autocomplete="off" autocapitalize="words" aria-describedby="firstName-error" required />
+                    <span class="error-message" id="firstName-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Last Name -->
+                  <div class="form-group">
+                    <label class="form-label" for="lastName">
+                      Last Name <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <input class="form-input" type="text" id="lastName" name="lastName" placeholder="e.g. Doe" autocomplete="off" autocapitalize="words" aria-describedby="lastName-error" required />
+                    <span class="error-message" id="lastName-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Date of Birth -->
+                  <div class="form-group">
+                    <label class="form-label" for="dob">
+                      Date of Birth <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <input class="form-input" type="date" id="dob" name="dob" autocomplete="off" aria-describedby="dob-error" required />
+                    <span class="error-message" id="dob-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Gender -->
+                  <div class="form-group">
+                    <label class="form-label" for="gender">
+                      Gender <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <select class="form-select" id="gender" name="gender" autocomplete="off" aria-describedby="gender-error" required>
+                      <option value="" disabled selected>Select...</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                      <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                    <span class="error-message" id="gender-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Blood Group -->
+                  <div class="form-group">
+                    <label class="form-label" for="bloodGroup">Blood Group</label>
+                    <select class="form-select" id="bloodGroup" name="bloodGroup" autocomplete="off" aria-describedby="bloodGroup-error">
+                      <option value="" disabled selected>Select...</option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                    </select>
+                    <span class="error-message" id="bloodGroup-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Marital Status -->
+                  <div class="form-group">
+                    <label class="form-label" for="maritalStatus">Marital Status</label>
+                    <select class="form-select" id="maritalStatus" name="maritalStatus" autocomplete="off" aria-describedby="maritalStatus-error">
+                      <option value="" disabled selected>Select...</option>
+                      <option value="Single">Single</option>
+                      <option value="Married">Married</option>
+                      <option value="Divorced">Divorced</option>
+                      <option value="Widowed">Widowed</option>
+                    </select>
+                    <span class="error-message" id="maritalStatus-error" aria-live="polite"></span>
+                  </div>
+
+                </div>
+              </fieldset>
+
+              <!-- SECTION 2: Contact Information -->
+              <fieldset class="form-section">
+                <legend class="section-title">Contact Information</legend>
+                <hr class="section-divider" />
+                <div class="form-grid">
+                  
+                  <!-- Phone Number -->
+                  <div class="form-group">
+                    <label class="form-label" for="phone">
+                      Phone Number <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <input class="form-input" type="tel" id="phone" name="phone" placeholder="e.g. +92 300 1234567" autocomplete="off" inputmode="tel" aria-describedby="phone-error" required />
+                    <span class="error-message" id="phone-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Email Address -->
+                  <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input class="form-input" type="email" id="email" name="email" placeholder="e.g. name@example.com" autocomplete="off" aria-describedby="email-error" />
+                    <span class="error-message" id="email-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Street Address (Full Width) -->
+                  <div class="form-group full-width">
+                    <label class="form-label" for="address">Street Address</label>
+                    <input class="form-input" type="text" id="address" name="address" placeholder="e.g. 123 Main Street, Apt 4B" autocomplete="off" aria-describedby="address-error" />
+                    <span class="error-message" id="address-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- City -->
+                  <div class="form-group">
+                    <label class="form-label" for="city">City</label>
+                    <input class="form-input" type="text" id="city" name="city" placeholder="e.g. Lahore" autocomplete="off" autocapitalize="words" aria-describedby="city-error" />
+                    <span class="error-message" id="city-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Country -->
+                  <div class="form-group">
+                    <label class="form-label" for="country">Country</label>
+                    <input class="form-input" type="text" id="country" name="country" placeholder="e.g. Pakistan" autocomplete="off" autocapitalize="words" aria-describedby="country-error" />
+                    <span class="error-message" id="country-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Postal Code -->
+                  <div class="form-group">
+                    <label class="form-label" for="postalCode">Postal Code</label>
+                    <input class="form-input" type="text" id="postalCode" name="postalCode" placeholder="e.g. 54000" autocomplete="off" aria-describedby="postalCode-error" />
+                    <span class="error-message" id="postalCode-error" aria-live="polite"></span>
+                  </div>
+
+                </div>
+              </fieldset>
+
+              <!-- SECTION 3: Emergency Contact -->
+              <fieldset class="form-section">
+                <legend class="section-title">Emergency Contact</legend>
+                <hr class="section-divider" />
+                <div class="form-grid">
+                  
+                  <!-- Contact Person Name -->
+                  <div class="form-group">
+                    <label class="form-label" for="emergencyName">Contact Person Name</label>
+                    <input class="form-input" type="text" id="emergencyName" name="emergencyName" placeholder="e.g. Jane Doe" autocomplete="off" autocapitalize="words" aria-describedby="emergencyName-error" />
+                    <span class="error-message" id="emergencyName-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Relationship -->
+                  <div class="form-group">
+                    <label class="form-label" for="emergencyRelationship">Relationship</label>
+                    <select class="form-select" id="emergencyRelationship" name="emergencyRelationship" autocomplete="off" aria-describedby="emergencyRelationship-error">
+                      <option value="" disabled selected>Select...</option>
+                      <option value="Spouse">Spouse</option>
+                      <option value="Parent">Parent</option>
+                      <option value="Sibling">Sibling</option>
+                      <option value="Child">Child</option>
+                      <option value="Friend">Friend</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <span class="error-message" id="emergencyRelationship-error" aria-live="polite"></span>
+                  </div>
+
+                  <!-- Emergency Phone Number -->
+                  <div class="form-group">
+                    <label class="form-label" for="emergencyPhone">Emergency Phone Number</label>
+                    <input class="form-input" type="tel" id="emergencyPhone" name="emergencyPhone" placeholder="e.g. +92 300 7654321" autocomplete="off" inputmode="tel" aria-describedby="emergencyPhone-error" />
+                    <span class="error-message" id="emergencyPhone-error" aria-live="polite"></span>
+                  </div>
+
+                </div>
+              </fieldset>
+
+              <!-- SECTION 4: Medical Information -->
+              <fieldset class="form-section">
+                <legend class="section-title">Medical Information</legend>
+                <hr class="section-divider" />
+                <div class="form-grid">
+                  
+                  <!-- Existing Medical Conditions -->
+                  <div class="form-group full-width">
+                    <label class="form-label" for="medicalConditions">Existing Medical Conditions</label>
+                    <textarea class="form-textarea" id="medicalConditions" name="medicalConditions" rows="3" placeholder="e.g. Hypertension, Asthma, Type 2 Diabetes..." autocomplete="off" aria-describedby="medicalConditions-error"></textarea>
+                    <div class="textarea-footer">
+                      <span class="error-message" id="medicalConditions-error" aria-live="polite"></span>
+                      <span class="char-counter" id="medicalConditions-counter">0 / 500</span>
+                    </div>
+                  </div>
+
+                  <!-- Known Allergies -->
+                  <div class="form-group full-width">
+                    <label class="form-label" for="allergies">Known Allergies</label>
+                    <textarea class="form-textarea" id="allergies" name="allergies" rows="3" placeholder="e.g. Penicillin, Peanuts, Latex..." autocomplete="off" aria-describedby="allergies-error"></textarea>
+                    <div class="textarea-footer">
+                      <span class="error-message" id="allergies-error" aria-live="polite"></span>
+                      <span class="char-counter" id="allergies-counter">0 / 500</span>
+                    </div>
+                  </div>
+
+                  <!-- Current Medications -->
+                  <div class="form-group full-width">
+                    <label class="form-label" for="medications">Current Medications</label>
+                    <textarea class="form-textarea" id="medications" name="medications" rows="3" placeholder="e.g. Lisinopril 10mg daily, Metformin 500mg..." autocomplete="off" aria-describedby="medications-error"></textarea>
+                    <div class="textarea-footer">
+                      <span class="error-message" id="medications-error" aria-live="polite"></span>
+                      <span class="char-counter" id="medications-counter">0 / 500</span>
+                    </div>
+                  </div>
+
+                  <!-- Previous Medical History -->
+                  <div class="form-group full-width">
+                    <label class="form-label" for="medicalHistory">Previous Medical History</label>
+                    <textarea class="form-textarea" id="medicalHistory" name="medicalHistory" rows="3" placeholder="e.g. Appendectomy in 2018, past hospital stays or surgeries..." autocomplete="off" aria-describedby="medicalHistory-error"></textarea>
+                    <div class="textarea-footer">
+                      <span class="error-message" id="medicalHistory-error" aria-live="polite"></span>
+                      <span class="char-counter" id="medicalHistory-counter">0 / 500</span>
+                    </div>
+                  </div>
+
+                </div>
+              </fieldset>
+
+              <!-- Form Actions Footer -->
+              <div class="form-actions">
+                <button type="button" class="btn btn-text" id="cancelBtn">Cancel</button>
+                <button type="reset" class="btn btn-secondary" id="resetBtn">Reset Form</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">Register Patient</button>
+              </div>
+
+              <!-- Demo Mode Notice -->
+              <p class="demo-notice">
+                <svg class="demo-notice-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="16" x2="12" y2="12" />
+                  <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+                Demo mode: records are saved only in this browser (localStorage). Please do not enter real patient data.
+              </p>
+
+            </form>
+          </section>
+        </div>
+
+        <!-- =========================================================
+             VIEW 2: PATIENT DIRECTORY & LIST
+             ========================================================= -->
+        <div id="patientListView" class="view-panel" style="display: none;">
+          
+          <!-- Enterprise Clinical Summary Metrics -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-label">Total Patients</span>
+              <div class="metric-value-row">
+                <span class="metric-number" id="kpiTotalCount">1,024</span>
+                <span class="metric-pill">All Records</span>
+              </div>
+              <span class="metric-hint">Active clinical registrations</span>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-label">Clinical Admissions</span>
+              <div class="metric-value-row">
+                <span class="metric-number">256</span>
+                <span class="metric-pill">Inpatient</span>
+              </div>
+              <span class="metric-hint">Emergency & outpatient triage</span>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-label">Database Security</span>
+              <div class="metric-value-row">
+                <span class="metric-number text-sky">PostgreSQL</span>
+                <span class="metric-pill-sky">RLS Active</span>
+              </div>
+              <span class="metric-hint">Row-level security enforcement</span>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-label">Access Control</span>
+              <div class="metric-value-row">
+                <span class="metric-number">RBAC</span>
+                <span class="metric-pill-sky">Verified</span>
+              </div>
+              <span class="metric-hint">Staff role authorization active</span>
+            </div>
+          </div>
+
+          <section class="card directory-card">
+            <!-- Directory Card Header -->
+            <div class="directory-card-header">
+              <div class="directory-title-group">
+                <h2 class="card-title">Patient Records Directory</h2>
+                <span class="directory-badge" id="directoryTotalBadge">All Records</span>
+              </div>
+            </div>
+
+            <!-- Directory Toolbar (Search & Filter Controls) -->
+            <div class="directory-toolbar">
+              <div class="search-box">
+                <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input type="search" id="patientSearchInput" class="form-input search-input" placeholder="Search by name, ID, phone, city, or email..." aria-label="Search patients" />
+              </div>
+
+              <div class="filter-controls">
+                <select id="filterGender" class="form-select filter-select" aria-label="Filter by gender">
+                  <option value="">All Genders</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+
+                <select id="filterBloodGroup" class="form-select filter-select" aria-label="Filter by blood group">
+                  <option value="">All Blood Groups</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Responsive Table Container -->
+            <div class="table-responsive" id="patientTableWrapper">
+              <table class="patient-table" id="patientTable" aria-label="Registered Patients Directory">
+                <thead>
+                  <tr>
+                    <th scope="col">Patient ID</th>
+                    <th scope="col">Patient Name</th>
+                    <th scope="col">Gender / Age</th>
+                    <th scope="col">Blood Group</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Registered</th>
+                    <th scope="col" class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="patientTableBody">
+                  <!-- Generated via script.js -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State Container -->
+            <div id="patientEmptyState" class="empty-state" style="display: none;">
+              <div class="empty-state-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+              <h2 class="empty-state-title" id="emptyStateTitle">No Patients Found</h2>
+              <p class="empty-state-desc" id="emptyStateDesc">No registered patient records match your current criteria.</p>
+              <div class="empty-state-actions">
+                <button type="button" class="btn btn-primary btn-sm" id="emptyRegisterBtn">Register First Patient</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="emptySeedBtn">Load 10 Sample Patients</button>
+              </div>
+            </div>
+
+            <!-- Table Footer -->
+            <div class="table-footer">
+              <span class="table-count" id="patientTableCount">Showing 0 patients</span>
+              <button type="button" class="btn btn-text btn-sm" id="clearFiltersBtn" style="display: none;">Clear Filters</button>
+            </div>
+          </section>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- =========================================================
+       SUCCESS MODAL DIALOG
+       ========================================================= -->
+  <dialog id="successModal" class="modal" aria-labelledby="successModalTitle">
+    <div class="modal-card">
+      <div class="modal-status-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      </div>
+
+      <h2 id="successModalTitle" class="modal-title">Patient Registered Successfully</h2>
+      <p class="modal-patient-name" id="modalPatientName"></p>
+
+      <div class="modal-id-box">
+        <span class="modal-id-label">Assigned Patient ID</span>
+        <div class="modal-id-row">
+          <span class="modal-id-value" id="modalPatientId"></span>
+          <button type="button" class="btn btn-secondary btn-sm" id="copyIdBtn">Copy ID</button>
+        </div>
+      </div>
+
+      <p class="modal-meta">
+        Registration Time: <span id="modalRegDate"></span>
+      </p>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary" id="modalRegisterAnotherBtn">Register Another</button>
+        <button type="button" class="btn btn-secondary" id="modalViewInListBtn">View in Patient List</button>
+        <button type="button" class="btn btn-text" id="modalCloseBtn">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- =========================================================
+       PATIENT DOSSIER MODAL (Full Record View)
+       ========================================================= -->
+  <dialog id="dossierModal" class="modal modal-lg" aria-labelledby="dossierModalTitle">
+    <div class="modal-card modal-card-dossier">
+      <div class="dossier-header">
+        <div>
+          <span class="dossier-id-badge" id="dossierPatientId">PT-2026-000001</span>
+          <h2 id="dossierModalTitle" class="dossier-title">Jane Doe</h2>
+          <span class="dossier-meta">Registered: <span id="dossierRegDate"></span></span>
+        </div>
+        <button type="button" class="icon-btn" id="dossierCloseXBtn" aria-label="Close dossier modal">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="dossier-body">
+        <!-- 1. Personal Details -->
+        <div class="dossier-section">
+          <h3 class="dossier-section-title">Personal Details</h3>
+          <div class="dossier-grid">
+            <div class="dossier-item">
+              <span class="dossier-label">Date of Birth</span>
+              <span class="dossier-val" id="dossierDob">—</span>
+            </div>
+            <div class="dossier-item">
+              <span class="dossier-label">Age</span>
+              <span class="dossier-val" id="dossierAge">—</span>
+            </div>
+            <div class="dossier-item">
+              <span class="dossier-label">Gender</span>
+              <span class="dossier-val" id="dossierGender">—</span>
+            </div>
+            <div class="dossier-item">
+              <span class="dossier-label">Blood Group</span>
+              <span class="dossier-val" id="dossierBloodGroup">—</span>
+            </div>
+            <div class="dossier-item">
+              <span class="dossier-label">Marital Status</span>
+              <span class="dossier-val" id="dossierMaritalStatus">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Contact Details -->
+        <div class="dossier-section">
+          <h3 class="dossier-section-title">Contact Information</h3>
+          <div class="dossier-grid">
+            <div class="dossier-item">
+              <span class="dossier-label">Phone Number</span>
+              <span class="dossier-val" id="dossierPhone">—</span>
+            </div>
+            <div class="dossier-item">
+              <span class="dossier-label">Email Address</span>
+              <span class="dossier-val" id="dossierEmail">—</span>
+            </div>
+            <div class="dossier-item full-span">
+              <span class="dossier-label">Street Address</span>
+              <span class="dossier-val" id="dossierAddress">—</span>
+            </div>
+            <div class="dossier-item">
+              <span class="dossier-label">City</span>
+              <span class="dossier-val" id="dossierCity">—</span>
+            </div>
+            <div class="dossier-item">
+              <span class="dossier-label">Country</span>
+              <span class="dossier-val" id="dossierCountry">—</span>
+            </div>
+            <div class="dossier-item">
+              <span class="dossier-label">Postal Code</span>
+              <span class="dossier-val" id="dossierPostalCode">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Emergency Contact -->
+        <div class="dossier-section">
+          <h3 class="dossier-section-title">Emergency Contact</h3>
+          <div class="dossier-grid">
+            <div class="dossier-item">
+              <span class="dossier-label">Contact Person</span>
+              <span class="dossier-val" id="dossierEmergencyName">—</span>
+            </div>
+            <div class="dossier-item">
+              <span class="dossier-label">Relationship</span>
+              <span class="dossier-val" id="dossierEmergencyRel">—</span>
+            </div>
+            <div class="dossier-item">
+              <span class="dossier-label">Emergency Phone</span>
+              <span class="dossier-val" id="dossierEmergencyPhone">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Medical Notes -->
+        <div class="dossier-section">
+          <h3 class="dossier-section-title">Medical Notes</h3>
+          <div class="dossier-grid">
+            <div class="dossier-item full-span">
+              <span class="dossier-label">Existing Medical Conditions</span>
+              <p class="dossier-text" id="dossierConditions">None reported</p>
+            </div>
+            <div class="dossier-item full-span">
+              <span class="dossier-label">Known Allergies</span>
+              <p class="dossier-text" id="dossierAllergies">None reported</p>
+            </div>
+            <div class="dossier-item full-span">
+              <span class="dossier-label">Current Medications</span>
+              <p class="dossier-text" id="dossierMedications">None reported</p>
+            </div>
+            <div class="dossier-item full-span">
+              <span class="dossier-label">Previous Medical History</span>
+              <p class="dossier-text" id="dossierHistory">None reported</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions dossier-actions">
+        <button type="button" class="btn btn-secondary" id="dossierPrintBtn">Print Dossier</button>
+        <button type="button" class="btn btn-primary" id="dossierCloseBtn">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- =========================================================
+       CONFIRMATION MODAL DIALOG (Reusable)
+       ========================================================= -->
+  <dialog id="confirmModal" class="modal" aria-labelledby="confirmModalTitle">
+    <div class="modal-card modal-card-sm">
+      <h2 id="confirmModalTitle" class="modal-title">Confirm Action</h2>
+      <p id="confirmModalMessage" class="modal-message"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="confirmModalCancelBtn">Keep Editing</button>
+        <button type="button" class="btn btn-primary" id="confirmModalConfirmBtn">Confirm</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Official Supabase JS v2 Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Application Supabase Config & Auth Guard -->
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
+  <!-- Main Application Script -->
+  <script src="script.js"></script>
+</body>
+</html>
